@@ -4,7 +4,8 @@ export default function Root(ThemeContext) {
   const [index, setIndex] = useState(0)
   const [todos, setTodos] = useState(() => createTodos());
   function handleClick() {
-    setIndex(999)
+    setIndex(index => index + 1)
+    setIndex(index => index + 1) // nextstate
   }
   function createTodos() {
     return 'todo2'
