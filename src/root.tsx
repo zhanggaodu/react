@@ -1,15 +1,12 @@
 import { useState, useContext } from 'react'
 
 export default function Root(ThemeContext) {
-  const [index, setIndex] = useState(0)
-  const [todos, setTodos] = useState(() => createTodos());
+  const [key, setKey] = useState(0)
+  // const [todos, setTodos] = useState(() => createTodos()); 函数返回什么类型 todos就是什么类型
   function handleClick() {
-    setIndex(index => index + 1)
-    setIndex(index => index + 1) // nextstate
+    setKey(key + 1)
   }
-  function createTodos() {
-    return 'todo2'
-  }
+
   // userReducer
   const theme = useContext(ThemeContext)
   // useRef 可以用于timer html元素
@@ -18,7 +15,14 @@ export default function Root(ThemeContext) {
   // useCallback cache function
   return (
     <>
-    <div onClick={handleClick}>index:{index + todos}</div>
+    <div onClick={handleClick}>reset:{key}</div>
+    <Form key={key} />
     </>
+  )
+}
+function Form() {
+  const [name, setName] = useState('')
+  return (
+    <input value={name} onChange={e => setName(e.target.value)} />
   )
 }
