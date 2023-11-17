@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react'
 
 export default function Root(ThemeContext) {
-  const [key, setKey] = useState(0)
+  const [key, setKey] = useState(0) // 很神奇的用法
   // const [todos, setTodos] = useState(() => createTodos()); 函数返回什么类型 todos就是什么类型
   function handleClick() {
     setKey(key + 1)
