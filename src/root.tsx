@@ -1,5 +1,7 @@
-import { useState, useRef, useReducer, createContext, useEffect, useMemo, useTransition, useDeferredValue, Suspense } from 'react'
+import { useState, useRef, useReducer, createContext, useEffect, useMemo, useTransition, useDeferredValue, 
+  Fragment, Suspense, useContext, forwardRef } from 'react'
 import { TooltipsContent } from './pages/tooltips'
+import MyInput from './pages/myInput'
 
 export default function Root() {
   const [key, setKey] = useState(0) // 很神奇的用法 更改组件的key就可以得到一个新的组件
@@ -47,22 +49,46 @@ export default function Root() {
   const [query, setQuery] = useState('')
   const deferQuery = useDeferredValue(query)
 
+
+  // build in react components
+  // Fragment like <></> mutiple your jsx nodes togeter
+  // Profile measurement cpu and memory overhead
+  // Suspence diaplay a fallback while childcomponents are loading  fallback={<Loading/>} 嵌套使用会一层一层的出现
+  // 可以和defervalue一起使用在新值被render之前会有loading
+  // startTansition 高优先级的更新
+  // StrictMode
+  // define own components
+  // forwardRef 用forwardRef声明的组件可以向外暴露ref
+  const myInputRef = useRef<HTMLInputElement>(null)
+  function fn() {
+    myInputRef.current.focus()
+  }
+  // lazy 懒加载资源 第一次使用lazy的资源时react才会去resolve
+  // memo skip re-rendering step when its props are unchanged
+  // useFormStatus show form表单的提交状态
+
+
   return (
-    <>
-    <ThemeContext.Provider value="dark">
-      <div onClick={handleClick}>reset:{key}</div>
-      <Suspense fallback={<h2>loading...</h2>}>
-        <Form key={key} query={deferQuery} />
-      </Suspense>
-      <div onClick={handlerClick}>click{state.age} {state.name}</div>
-      {/* 弹出框 */}
-      {/* <TooltipsContent tooltipContent={<div>this is tooltips</div>}>hover on me</TooltipsContent> */}
-    </ThemeContext.Provider>
-    <div> useMemo {v}</div>
+    <Fragment>
+      <ThemeContext.Provider value="dark">
+        <div onClick={handleClick}>reset:{key}</div>
+        <Suspense fallback={<h2>loading...</h2>}>
+          <Form key={key} query={deferQuery}/>
+        </Suspense>
+        <div onClick={handlerClick}>click{state.age} {state.name}</div>
+        {/* 弹出框 */}
+        {/* <TooltipsContent tooltipContent={<div>this is tooltips</div>}>hover on me</TooltipsContent> */}
+      </ThemeContext.Provider>
+      <div> useMemo {v}</div>
       <input type="text" value={query} onChange={(e) => {setQuery(e.target.value)}} />
-    </>
+      <form>
+        <MyInput label="Enter your name:" ref={myInputRef} />
+      </form>
+      <div onClick={fn}>点击暴露ref</div>
+    </Fragment>
   )
 }
+
 function Form({query}) {
   const [name, setName] = useState('')
   const inputRef = useRef<HTMLInputElement>()
@@ -72,6 +98,7 @@ function Form({query}) {
     // inputRef.current.focus()
   })
   // const theme = useContext(ThemeContext)
+  // TODO 传给子组件的context不生效
   return (
     <>
       <input ref={inputRef} value={name} onChange={e => setName(e.target.value)} />
