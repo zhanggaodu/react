@@ -67,11 +67,14 @@ export default function Root() {
   // memo skip re-rendering step when its props are unchanged
   // useFormStatus show form表单的提交状态
 
+  let style_text = {
+    color: 'green'
+  }
 
   return (
     <Fragment>
       <ThemeContext.Provider value="dark">
-        <div onClick={handleClick}>reset:{key}</div>
+        <div style={style_text} onClick={handleClick}>reset:{key}</div>
         <Suspense fallback={<h2>loading...</h2>}>
           <Form key={key} query={deferQuery}/>
         </Suspense>
