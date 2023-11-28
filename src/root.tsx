@@ -3,8 +3,20 @@ import { useState, useRef, useReducer, createContext, useEffect, useMemo, useTra
 import { TooltipsContent } from './pages/tooltips'
 import MyInput from './pages/myInput'
 
+type Action = {
+  type: string
+}
+type State =  {
+  age: number,
+  name: string
+}
+type Theme = "light" | "dark" | "system"
+const ThemeContext = createContext<Theme>("system")
+const useGetTheme = () => useContext(ThemeContext)
+
 export default function Root() {
-  const [key, setKey] = useState(0) // 很神奇的用法 更改组件的key就可以得到一个新的组件
+  const initialState: State = { age: 20, name: 'vue' }
+  const [key, setKey] = useState<number>(0) // 很神奇的用法 更改组件的key就可以得到一个新的组件
   // const [todos, setTodos] = useState(() => createTodos()); 函数返回什么类型 todos就是什么类型
   function handleClick() {
     setKey(key + 1)
@@ -12,21 +24,23 @@ export default function Root() {
 
   // function fn(){ return 1}
   // userReducer 只能在top component和自己的组件里用 涉及值的复杂逻辑状态时和使用之前的值优于useState
-  const [state, dispatch] = useReducer(reduce, {age: 20, name: 'vue'}) // 如果初始化的状态跟初始化的函数返回值类型不一致也不会报错
-  function reduce(state: any, action: object) {
+  const [state, dispatch] = useReducer(reduce, initialState) // 如果初始化的状态跟初始化的函数返回值类型不一致也不会报错
+  function reduce(state: State, action: Action): State {
     if (action.type === 'click') {
       return { // 返回的就是state的值 会直接覆盖
         ...state,
         age: state.age+1
       }
     }
+    throw new Error('Unknown action type')
   }
+
   function handlerClick() {
     dispatch({type:'click'})
   }
 
   // useContext
-  const ThemeContext = createContext(null)
+  // const ThemeContext = createContext(null)
 
   // useRef create a value not need for rendering
 
@@ -92,7 +106,7 @@ export default function Root() {
   )
 }
 
-function Form({query}) {
+function Form({ query }: { query: string }) {
   const [name, setName] = useState('')
   const inputRef = useRef<HTMLInputElement>()
   useEffect(() => {
@@ -100,10 +114,11 @@ function Form({query}) {
     // 组价并不会向外暴露ref fix使用forwardRef
     // inputRef.current.focus()
   })
-  // const theme = useContext(ThemeContext)
+  const theme = useGetTheme()
   // TODO 传给子组件的context不生效
   return (
     <>
+    <div>theme{theme}</div>
       <input ref={inputRef} value={name} onChange={e => setName(e.target.value)} />
       <div>deferValue{query}</div>
     </>
