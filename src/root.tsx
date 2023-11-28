@@ -115,7 +115,6 @@ function Form({ query }: { query: string }) {
     // inputRef.current.focus()
   })
   const theme = useGetTheme()
-  // TODO 传给子组件的context不生效
   return (
     <>
     <div>theme{theme}</div>
